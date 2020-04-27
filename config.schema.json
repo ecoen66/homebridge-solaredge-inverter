@@ -1,0 +1,48 @@
+{
+	"pluginAlias": "SolarEdge Inverter",
+	"pluginType": "accessory",
+	"schema": {
+		"name": {
+			"title": "Name",
+			"type": "string",
+			"required": true,
+			"default": "SolarEdge Inverter"
+		},
+		"manufacturer": {
+			"title": "Manufacturer",
+			"type": "string",
+			"required": false,
+			"default": ""
+		},
+		"model": {
+			"title": "Inverter Model",
+			"type": "string",
+			"required": false,
+			"default": ""
+		},
+		"serial": {
+			"title": "Serial Number",
+			"type": "string",
+			"required": false,
+			"default": ""
+		},
+		"site_id": {
+			"title": "Site ID",
+			"type": "string",
+			"required": true,
+			"default": ""
+		},
+		"api_key": {
+			"title": "API KeyD",
+			"type": "string",
+			"required": true,
+			"default": ""
+		},
+		"inverter_data": {
+			"title": "Inverter Data Field",
+			"type": "string",
+			"required": true,
+			"default": "power"
+		}
+	}
+}
