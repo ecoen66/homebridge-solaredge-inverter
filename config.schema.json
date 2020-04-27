@@ -37,12 +37,6 @@
 			"type": "string",
 			"required": true,
 			"default": ""
-		},
-		"inverter_data": {
-			"title": "Inverter Data Field",
-			"type": "string",
-			"required": true,
-			"default": "power"
 		}
 	}
 }

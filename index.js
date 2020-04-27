@@ -36,7 +36,7 @@ const api = axios.create({
 const getInverterData = async(siteID, apiKey) => {
 	try {
 //	    return await api.get('https://'+inverterIp+'/solar_api/v1/GetPowerFlowRealtimeData.fcgi')
-	    return await api.get('https://monitoringapi.solaredge.com/ site/'+siteID+'/overview?api_key='+apiKey)
+	    return await api.get('https://monitoringapi.solaredge.com/site/'+siteID+'/overview?api_key='+apiKey)
 	} catch (error) {
 	    console.error(error)
 	}
@@ -49,17 +49,18 @@ const getInverterData = async(siteID, apiKey) => {
  * @param {inverterDataValue} the JSON key queried with the return value
  * @return {bool} the value for the accessory
  */
-const getAccessoryValue = async (siteID, apiKey, inverterDataValue) => {
+const getAccessoryValue = async (siteID, apiKey, log) => {
 
 	// To Do: Need to handle if no connection
 	const inverterData = await getInverterData(siteID, apiKey)
 
 	if(inverterData) {
-		if (inverterData.data.Body.Data.Site[inverterDataValue] == null) {
+		log.info('Data from API', inverterData.data.overview.currentPower.power);
+		if (inverterData.data.overview.currentPower.power == null) {
 			return 0
 		} else {
 			// Return positive value
-			return Math.abs(Math.round(inverterData.data.Body.Data.Site[inverterDataValue], 1))
+			return Math.abs(Math.round(inverterData.data.overview.currentPower.power, 1))
 		}
 	} else {
 		// No response inverterData return 0
@@ -80,7 +81,6 @@ class SolarEdgeInverter {
 	    this.serial = config["serial"] || "solaredge-inverter-1";
 	    this.site_id = config["site_id"];
 	    this.api_key = config["api_key"];
-	    this.inverter_data = config["inverter_data"];
 	    this.minLux = config["min_lux"] || DEF_MIN_LUX;
     	this.maxLux = config["max_lux"] || DEF_MAX_LUX;
     }
@@ -98,8 +98,8 @@ class SolarEdgeInverter {
     }
 
     async getOnCharacteristicHandler (callback) {
-	    this.log(`calling getOnCharacteristicHandler`, await getAccessoryValue(this.site_id, this.api_key, this.inverter_data))
+	    this.log(`calling getOnCharacteristicHandler`, await getAccessoryValue(this.site_id, this.api_key, this.log))
 
-	    callback(null, await getAccessoryValue(this.site_id, this.api_key, this.inverter_data))
+	    callback(null, await getAccessoryValue(this.site_id, this.api_key, this.log))
 	}
 }
