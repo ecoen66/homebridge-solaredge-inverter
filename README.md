@@ -1,6 +1,7 @@
 # homebridge-solaredge-inverter
 A [SolarEdge](https://www.solaredge.com) Inverter plugin for
-[Homebridge](https://github.com/nfarina/homebridge).
+[Homebridge](https://github.com/nfarina/homebridge).  This creates a Light Sensor in homekit,
+ where the LUX reading is actually the current power generation in Watts.
 
 This code is heavily based on the work of Stog's [homebridge-fronius-inverter](https://github.com/Stog/homebridge-fronius-inverter) accessory.
 

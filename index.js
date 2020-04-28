@@ -29,9 +29,8 @@ const api = axios.create({
 /**
  * Main API request with site overview data
  *
- * @param {inverterIp} the IP of the inver to be queried
- * @param {siteID} the site ID of the site to be queried
- * @param {apiKey} the API Key to access the site to be queried
+ * @param {siteID} the SolarEdge Site ID to be queried
+ * @param {apiKey} the SolarEdge monitoring API Key for access to the Site
  */
 const getInverterData = async(siteID, apiKey) => {
 	try {
@@ -45,8 +44,9 @@ const getInverterData = async(siteID, apiKey) => {
 /**
  * Gets and returns the accessory's value in the correct format.
  *
- * @param {inverterIp} the IP of the inver to be queried by getInverterData
- * @param {inverterDataValue} the JSON key queried with the return value
+ * @param {siteID} the SolarEdge Site ID to be queried
+ * @param {apiKey} the SolarEdge monitoring API Key for access to the Site
+ * @param (log) access to the homebridge logfile
  * @return {bool} the value for the accessory
  */
 const getAccessoryValue = async (siteID, apiKey, log) => {
