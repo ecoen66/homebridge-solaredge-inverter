@@ -1,6 +1,20 @@
 # Changelog
 
 
+## 0.1.0 (2020-11-01)
+
+#### Changes contributed by tomrush
+
+- Added additional LightSensor's for:
+        Current Day
+        Last Month
+        Last Year
+        Life Time
+- Converted units to kW and limited at 2 decimal places.
+- Updated Config schema to allow for new settings.
+- Updated documentation
+- Added Git ignore file
+
 ## 0.0.4 (2020-04-28)
 
 #### Changes
