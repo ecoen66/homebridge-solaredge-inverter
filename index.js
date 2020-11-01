@@ -6,6 +6,8 @@ var Service, Characteristic;
 const DEF_MIN_LUX = 0,
       DEF_MAX_LUX = 10000;
 
+const DISPLAY_USAGE_SENSORS = 0;
+
 const PLUGIN_NAME   = 'homebridge-solaredge-inverter';
 const ACCESSORY_NAME = 'SolarEdge Inverter';
 
@@ -34,7 +36,6 @@ const api = axios.create({
  */
 const getInverterData = async(siteID, apiKey) => {
 	try {
-//	    return await api.get('https://'+inverterIp+'/solar_api/v1/GetPowerFlowRealtimeData.fcgi')
 	    return await api.get('https://monitoringapi.solaredge.com/site/'+siteID+'/overview?api_key='+apiKey)
 	} catch (error) {
 	    console.error(error)
@@ -55,16 +56,17 @@ const getAccessoryValue = async (siteID, apiKey, log) => {
 	const inverterData = await getInverterData(siteID, apiKey)
 
 	if(inverterData) {
-		log.info('Data from API', inverterData.data.overview.currentPower.power);
-		if (inverterData.data.overview.currentPower.power == null) {
-			return 0
-		} else {
-			// Return positive value
-			return Math.abs(Math.round(inverterData.data.overview.currentPower.power, 1))
+		log.info('Data from API', inverterData.data.overview);
+
+		if(inverterData.data.overview) {
+			return inverterData.data.overview;
+		}
+		else {
+			return null
 		}
 	} else {
 		// No response inverterData return 0
-		return 0
+		return null
 	}
 }
 
@@ -72,8 +74,27 @@ class SolarEdgeInverter {
     constructor(log, config) {
     	this.log = log
     	this.config = config
+		this.display = this.config.display[DISPLAY_USAGE_SENSORS] || {current:true};
 
-    	this.service = new Service.LightSensor(this.config.name)
+		if(this.display.current) {
+			this.currentPower = new Service.LightSensor("Current Power","Current Power")
+		}
+
+		if(this.display.last_day) {
+			this.lastDayPower = new Service.LightSensor("Current Day", "Current Day")
+		}
+
+		if(this.display.last_month) {
+			this.lastMonth = new Service.LightSensor("Last Month", "Last Month")
+		}
+
+		if(this.display.last_year) {
+			this.lastYear = new Service.LightSensor("Last Year", "Last Year")
+		}
+
+		if(this.display.life_time) {
+			this.lifeTime = new Service.LightSensor("Life Time", "Life Time")
+		}
 
     	this.name = config["name"];
     	this.manufacturer = config["manufacturer"] || "SolarEdge";
@@ -82,7 +103,7 @@ class SolarEdgeInverter {
 	    this.site_id = config["site_id"];
 	    this.api_key = config["api_key"];
 	    this.minLux = config["min_lux"] || DEF_MIN_LUX;
-    	this.maxLux = config["max_lux"] || DEF_MAX_LUX;
+		this.maxLux = config["max_lux"] || DEF_MAX_LUX;
     }
 
     getServices () {
@@ -91,15 +112,103 @@ class SolarEdgeInverter {
         .setCharacteristic(Characteristic.Model, this.model)
         .setCharacteristic(Characteristic.SerialNumber, this.serial)
 
-        this.service.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-	      .on('get', this.getOnCharacteristicHandler.bind(this))
+		const services = [informationService]
 
-	    return [informationService, this.service]
+		if(this.display.current) {
+			this.currentPower.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			.on('get', this.getCurrentPowerHandler.bind(this))
+			services.push(this.currentPower);
+		}
+
+		if(this.display.last_day) {
+			this.lastDayPower.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			.on('get', this.getLastDayHandler.bind(this))
+			services.push(this.lastDayPower);
+		}
+
+		if(this.display.last_month) {
+			this.lastMonth.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			.on('get', this.getLastMonthHandler.bind(this))
+			services.push(this.lastMonth);
+		}
+
+		if(this.display.last_year) {
+			this.lastYear.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			.on('get', this.getLastYearHandler.bind(this))
+			services.push(this.lastYear);
+		}
+
+		if(this.display.life_time) {
+			this.lifeTime.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+			.on('get', this.getLifeTimeHandler.bind(this))
+			services.push(this.lifeTime);
+		}
+
+	    return services
     }
 
-    async getOnCharacteristicHandler (callback) {
-	    this.log(`calling getOnCharacteristicHandler`, await getAccessoryValue(this.site_id, this.api_key, this.log))
+    async getCurrentPowerHandler (callback) {
+	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
-	    callback(null, await getAccessoryValue(this.site_id, this.api_key, this.log))
+		if (result) {
+			if(parseFloat(result.currentPower.power) > 0) {
+				const power = (result.currentPower.power / 1000).toPrecision(2)
+				callback(null, power);
+			}
+			else {
+				callback(null, 0);
+			}
+		}
+		else {
+			callback(null, 0);
+		}
+	}
+
+	async getLastDayHandler (callback) {
+	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+
+		if (result) {
+			const energy = (result.lastDayData.energy / 1000).toPrecision(2)
+			callback(null, energy);
+		}
+		else {
+			callback(null, 0);
+		}
+	}
+
+	async getLastMonthHandler (callback) {
+	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+
+		if (result) {
+			const energy = (result.lastMonthData.energy / 1000).toPrecision(2);
+			callback(null, energy);
+		}
+		else {
+			callback(null, 0);
+		}
+	}
+
+	async getLastYearHandler (callback) {
+	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+
+		if (result) {
+			const energy = (result.lastYearData.energy / 1000).toPrecision(2);
+			callback(null, energy);
+		}
+		else {
+			callback(null, 0);
+		}
+	}
+
+	async getLifeTimeHandler (callback) {
+	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+
+		if (result) {
+			const energy = (result.lifeTimeData.energy / 1000).toPrecision(2);
+			callback(null, energy);
+		}
+		else {
+			callback(null, 0);
+		}
 	}
 }

@@ -33,7 +33,15 @@ Example accessory config (needs to be added to the homebridge config.json):
 				"serial": "myserialno",
 				"site_id": "mysiteid",
 				"api_key": "longapikey",
-				"accessory": "SolarEdge Inverter"
+				"accessory": "SolarEdge Inverter",
+				"display": [
+                {
+                    "current": true,
+                    "last_day": false,
+                    "last_month": false,
+                    "last_year": false,
+                    "life_time": true
+                }]
         	}
       	]
  ...
@@ -49,3 +57,8 @@ Field           			| Description
 **manufacturer**			| (optional) This shows up in the homekit accessory Characteristics.
 **model**					| (optional) This shows up in the homekit accessory Characteristics.
 **serial**					| (optional) This shows up in the homekit accessory Characteristics.
+**display -> current**		| (optional) Display current power (kW).
+**display -> last_day**		| (optional) Display Last Day power (kW).
+**display -> last_month**	| (optional) Display Last Month power (kW).
+**display -> last_year**	| (optional) Display Last Year power (kW).
+**display -> life_time**	| (optional) Display Life Time power (kW).
