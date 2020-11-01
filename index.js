@@ -152,7 +152,7 @@ class SolarEdgeInverter {
 
 		if (result) {
 			if(parseFloat(result.currentPower.power) > 0) {
-				const power = (result.currentPower.power / 1000).toPrecision(2)
+				const power = Math.abs((result.currentPower.power / 1000).toPrecision(2))
 				callback(null, power);
 			}
 			else {
@@ -168,7 +168,7 @@ class SolarEdgeInverter {
 	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
-			const energy = (result.lastDayData.energy / 1000).toPrecision(2)
+			const energy = Math.abs((result.lastDayData.energy / 1000).toPrecision(2))
 			callback(null, energy);
 		}
 		else {
@@ -180,7 +180,7 @@ class SolarEdgeInverter {
 	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
-			const energy = (result.lastMonthData.energy / 1000).toPrecision(2);
+			const energy = Math.abs((result.lastMonthData.energy / 1000).toPrecision(2))
 			callback(null, energy);
 		}
 		else {
@@ -192,7 +192,7 @@ class SolarEdgeInverter {
 	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
-			const energy = (result.lastYearData.energy / 1000).toPrecision(2);
+			const energy = Math.abs((result.lastYearData.energy / 1000).toPrecision(2))
 			callback(null, energy);
 		}
 		else {
@@ -204,7 +204,7 @@ class SolarEdgeInverter {
 	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
-			const energy = (result.lifeTimeData.energy / 1000).toPrecision(2);
+			const energy = Math.abs((result.lifeTimeData.energy / 1000).toPrecision(2))
 			callback(null, energy);
 		}
 		else {

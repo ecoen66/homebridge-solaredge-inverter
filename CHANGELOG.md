@@ -1,6 +1,12 @@
 # Changelog
 
 
+## 0.1.1 (2020-11-01)
+
+#### Changes
+
+- Modified the math to work in absolute values (my homebridge instance needed this)
+
 ## 0.1.0 (2020-11-01)
 
 #### Changes contributed by tomrush
