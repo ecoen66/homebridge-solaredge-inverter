@@ -68,10 +68,15 @@
 						"title": "Lifetime Power",
 						"type": "boolean",
 						"default": false
+					},
+					"battery": {
+						"title": "Battery Level",
+						"type": "boolean",
+						"default": false
 					}
 				}
 			}
 		}
 	}
-}   
+}
 

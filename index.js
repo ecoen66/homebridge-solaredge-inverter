@@ -28,6 +28,15 @@ const api = axios.create({
   adapter: cache.adapter
 })
 
+function isEmptyObject(obj) {
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 /**
  * Main API request with site overview data
  *
@@ -65,15 +74,56 @@ const getAccessoryValue = async (siteID, apiKey, log) => {
 			return null
 		}
 	} else {
-		// No response inverterData return 0
+		return null
+	}
+}
+
+/**
+ * API request with power flow data
+ *
+ * @param {siteID} the SolarEdge Site ID to be queried
+ * @param {apiKey} the SolarEdge monitoring API Key for access to the Site
+ */
+const getPowerFlowData = async(siteID, apiKey) => {
+	try {
+	    return await api.get('https://monitoringapi.solaredge.com/site/'+siteID+'/currentPowerFlow?api_key='+apiKey)
+	} catch (error) {
+	    console.error(error)
+	}
+}
+
+/**
+ * Gets and returns the battery's charge value in the correct format.
+ *
+ * @param {siteID} the SolarEdge Site ID to be queried
+ * @param {apiKey} the SolarEdge monitoring API Key for access to the Site
+ * @param (log) access to the homebridge logfile
+ * @return {bool} the value for the accessory
+ */
+const getBatteryValues = async (siteID, apiKey, log) => {
+
+	// To Do: Need to handle if no connection
+	const powerFlowData = await getPowerFlowData(siteID, apiKey)
+
+	if(powerFlowData) {
+		log.info('Data from Power Flow API', powerFlowData.data.siteCurrentPowerFlow);
+
+		if(powerFlowData.data.siteCurrentPowerFlow) {
+			return powerFlowData.data.siteCurrentPowerFlow;
+		}
+		else {
+			return null
+		}
+	}
+	else {
 		return null
 	}
 }
 
 class SolarEdgeInverter {
-    constructor(log, config) {
-    	this.log = log
-    	this.config = config
+	constructor(log, config) {
+		this.log = log
+		this.config = config
 		this.display = this.config.display[DISPLAY_USAGE_SENSORS] || {current:true};
 
 		if(this.display.current) {
@@ -96,21 +146,25 @@ class SolarEdgeInverter {
 			this.lifeTime = new Service.LightSensor("Life Time", "Life Time")
 		}
 
-    	this.name = config["name"];
-    	this.manufacturer = config["manufacturer"] || "SolarEdge";
-	    this.model = config["model"] || "Inverter";
-	    this.serial = config["serial"] || "solaredge-inverter-1";
-	    this.site_id = config["site_id"];
-	    this.api_key = config["api_key"];
-	    this.minLux = config["min_lux"] || DEF_MIN_LUX;
-		this.maxLux = config["max_lux"] || DEF_MAX_LUX;
-    }
+		if(this.display.battery) {
+			this.battery = new Service.BatteryService("Battery Level", "Battery Level")
+		}
 
-    getServices () {
-    	const informationService = new Service.AccessoryInformation()
-        .setCharacteristic(Characteristic.Manufacturer, this.manufacturer)
-        .setCharacteristic(Characteristic.Model, this.model)
-        .setCharacteristic(Characteristic.SerialNumber, this.serial)
+		this.name = config["name"];
+		this.manufacturer = config["manufacturer"] || "SolarEdge";
+		this.model = config["model"] || "Inverter";
+		this.serial = config["serial"] || "solaredge-inverter-1";
+		this.site_id = config["site_id"];
+		this.api_key = config["api_key"];
+		this.minLux = config["min_lux"] || DEF_MIN_LUX;
+		this.maxLux = config["max_lux"] || DEF_MAX_LUX;
+	}
+
+	getServices () {
+		const informationService = new Service.AccessoryInformation()
+			.setCharacteristic(Characteristic.Manufacturer, this.manufacturer)
+			.setCharacteristic(Characteristic.Model, this.model)
+			.setCharacteristic(Characteristic.SerialNumber, this.serial)
 
 		const services = [informationService]
 
@@ -144,11 +198,21 @@ class SolarEdgeInverter {
 			services.push(this.lifeTime);
 		}
 
-	    return services
-    }
+		if(this.display.battery) {
+			this.battery.getCharacteristic(Characteristic.BatteryLevel)
+				.on('get', this.getBatteryLevelCharacteristic.bind(this));
+			this.battery.getCharacteristic(Characteristic.ChargingState)
+				.on('get', this.getChargingStateCharacteristic.bind(this));
+			this.battery.getCharacteristic(Characteristic.StatusLowBattery)
+				.on('get', this.getLowBatteryCharacteristic.bind(this));
+						services.push(this.battery);
+		}
 
-    async getCurrentPowerHandler (callback) {
-	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+		return services
+	}
+
+	async getCurrentPowerHandler (callback) {
+		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
 			if(parseFloat(result.currentPower.power) > 0) {
@@ -165,7 +229,7 @@ class SolarEdgeInverter {
 	}
 
 	async getLastDayHandler (callback) {
-	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
 			const energy = Math.abs((result.lastDayData.energy / 1000).toPrecision(2))
@@ -177,7 +241,7 @@ class SolarEdgeInverter {
 	}
 
 	async getLastMonthHandler (callback) {
-	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
 			const energy = Math.abs((result.lastMonthData.energy / 1000).toPrecision(2))
@@ -189,7 +253,7 @@ class SolarEdgeInverter {
 	}
 
 	async getLastYearHandler (callback) {
-	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
 			const energy = Math.abs((result.lastYearData.energy / 1000).toPrecision(2))
@@ -201,7 +265,7 @@ class SolarEdgeInverter {
 	}
 
 	async getLifeTimeHandler (callback) {
-	    const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
 			const energy = Math.abs((result.lifeTimeData.energy / 1000).toPrecision(2))
@@ -209,6 +273,55 @@ class SolarEdgeInverter {
 		}
 		else {
 			callback(null, 0);
+		}
+	}
+
+	async getBatteryLevelCharacteristic (callback) {
+		const result = await getBatteryValues(this.site_id, this.api_key, this.log);
+
+		if (!isEmptyObject(result)) {
+			const chargeLevel = result.STORAGE.chargeLevel
+			callback(null, chargeLevel);
+		}
+		else {
+			callback(null, 0);
+		}
+	}
+
+	async getChargingStateCharacteristic (callback) {
+		const result = await getBatteryValues(this.site_id, this.api_key, this.log);
+
+		if (!isEmptyObject(result)) {
+			if (result.STORAGE.status == "Idle") {
+				callback(null, 0);
+			}
+			else {
+				result.connections.forEach(element => {
+					if (element.to == "STORAGE"){
+	//    		inProgress
+						callback(null, 1)
+					}
+					else {
+						callback(null, 0);
+					}
+				})
+			}
+		}
+		else {
+//    notChargeable
+			callback(null, 2);
+		}
+	}
+
+	async getLowBatteryCharacteristic (callback) {
+		const result = await getBatteryValues(this.site_id, this.api_key, this.log);
+
+		if (!isEmptyObject(result)) {
+			const lowBattery = result.STORAGE.critical
+			callback(null, lowBattery);
+		}
+		else {
+			callback(null, false);
 		}
 	}
 }

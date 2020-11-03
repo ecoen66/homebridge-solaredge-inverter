@@ -1,6 +1,12 @@
 # Changelog
 
 
+## 0.1.2 (2020-11-03)
+
+#### Changes
+
+- Added an optional BatteryLevel display
+
 ## 0.1.1 (2020-11-01)
 
 #### Changes

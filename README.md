@@ -1,7 +1,7 @@
 # homebridge-solaredge-inverter
 A [SolarEdge](https://www.solaredge.com) Inverter plugin for
-[Homebridge](https://github.com/nfarina/homebridge).  This creates a Light Sensor in homekit,
- where the LUX reading is actually the current power generation in Watts.
+[Homebridge](https://github.com/nfarina/homebridge).  This creates a a set of Light Sensors in homekit,
+ where the LUX reading is actually the  power generation in KiloWatts.  There is also an option to display battery level if applicable.
 
 This code is heavily based on the work of Stog's [homebridge-fronius-inverter](https://github.com/Stog/homebridge-fronius-inverter) accessory.
 
@@ -41,6 +41,7 @@ Example accessory config (needs to be added to the homebridge config.json):
                     "last_month": false,
                     "last_year": false,
                     "life_time": true
+                    "battery": true
                 }]
         	}
       	]
@@ -62,3 +63,5 @@ Field           			| Description
 **display -> last_month**	| (optional) Display Last Month power (kW).
 **display -> last_year**	| (optional) Display Last Year power (kW).
 **display -> life_time**	| (optional) Display Life Time power (kW).
+**display -> battery**		| (optional) Display Battery Level (%).
+
