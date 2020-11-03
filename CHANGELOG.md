@@ -1,6 +1,12 @@
 # Changelog
 
 
+## 0.1.3 (2020-11-03)
+
+#### Changes
+
+- Fixed a typo in config.schema.json
+
 ## 0.1.2 (2020-11-03)
 
 #### Changes

@@ -55,7 +55,7 @@
 						"default": false
 					},
 					"last_month": {
-						"title": "Last Months's Power",
+						"title": "Last Month's Power",
 						"type": "boolean",
 						"default": false
 					},
