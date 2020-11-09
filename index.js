@@ -4,7 +4,7 @@ const setupCache = require('axios-cache-adapter').setupCache;
 var Service, Characteristic;
 
 const DEF_MIN_LUX = 0,
-      DEF_MAX_LUX = 10000;
+      DEF_MAX_LUX = 65535;
 
 const DISPLAY_USAGE_SENSORS = 0;
 
@@ -124,7 +124,7 @@ class SolarEdgeInverter {
 	constructor(log, config) {
 		this.log = log
 		this.config = config
-		this.display = this.config.display[DISPLAY_USAGE_SENSORS] || {current:true};
+		this.display = this.config.display || {current:true};
 
 		if(this.display.current) {
 			this.currentPower = new Service.LightSensor("Current Power","Current Power")
@@ -216,7 +216,7 @@ class SolarEdgeInverter {
 
 		if (result) {
 			if(parseFloat(result.currentPower.power) > 0) {
-				const power = Math.abs((result.currentPower.power / 1000).toPrecision(2))
+				const power = Math.abs(Math.round(((result.currentPower.power / 1000) + Number.EPSILON) *10) /10)
 				callback(null, power);
 			}
 			else {
@@ -232,7 +232,7 @@ class SolarEdgeInverter {
 		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
-			const energy = Math.abs((result.lastDayData.energy / 1000).toPrecision(2))
+			const energy = Math.abs(Math.round(result.lastDayData.energy / 1000) + Number.EPSILON)
 			callback(null, energy);
 		}
 		else {
@@ -244,7 +244,7 @@ class SolarEdgeInverter {
 		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
-			const energy = Math.abs((result.lastMonthData.energy / 1000).toPrecision(2))
+			const energy = Math.abs(Math.round(result.lastMonthData.energy / 1000) + Number.EPSILON)
 			callback(null, energy);
 		}
 		else {
@@ -256,7 +256,7 @@ class SolarEdgeInverter {
 		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
-			const energy = Math.abs((result.lastYearData.energy / 1000).toPrecision(2))
+			const energy = Math.abs(Math.round(result.lastYearData.energy / 1000) + Number.EPSILON)
 			callback(null, energy);
 		}
 		else {
@@ -268,7 +268,7 @@ class SolarEdgeInverter {
 		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
 
 		if (result) {
-			const energy = Math.abs((result.lifeTimeData.energy / 1000).toPrecision(2))
+			const energy = Math.abs(Math.round(result.lifeTimeData.energy / 1000) + Number.EPSILON)
 			callback(null, energy);
 		}
 		else {

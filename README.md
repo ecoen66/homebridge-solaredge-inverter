@@ -26,7 +26,7 @@ Example accessory config (needs to be added to the homebridge config.json):
  ...
 
 		"accessories": [
-        	{
+      {
 				"name": "SolarEdge Inverter",
 				"manufacturer": "SolarEdge",
 				"model": "SE10000H-US000BNU4",
@@ -34,17 +34,16 @@ Example accessory config (needs to be added to the homebridge config.json):
 				"site_id": "mysiteid",
 				"api_key": "longapikey",
 				"accessory": "SolarEdge Inverter",
-				"display": [
-                {
-                    "current": true,
-                    "last_day": false,
-                    "last_month": false,
-                    "last_year": false,
-                    "life_time": true
-                    "battery": true
-                }]
-        	}
-      	]
+				"display": {
+										"current": true,
+										"last_day": false,
+										"last_month": false,
+										"last_year": false,
+										"life_time": true
+										"battery": true
+				}
+			}
+    ]
  ...
 
 ### Config Explanation:
@@ -58,10 +57,10 @@ Field           			| Description
 **manufacturer**			| (optional) This shows up in the homekit accessory Characteristics.
 **model**					| (optional) This shows up in the homekit accessory Characteristics.
 **serial**					| (optional) This shows up in the homekit accessory Characteristics.
-**display -> current**		| (optional) Display current power (kW).
-**display -> last_day**		| (optional) Display Last Day power (kW).
-**display -> last_month**	| (optional) Display Last Month power (kW).
-**display -> last_year**	| (optional) Display Last Year power (kW).
-**display -> life_time**	| (optional) Display Life Time power (kW).
-**display -> battery**		| (optional) Display Battery Level (%).
+**display -> current**		| (required) Display current power (kW).
+**display -> last_day**		| (required) Display Last Day power (kW).
+**display -> last_month**	| (required) Display Last Month power (kW).
+**display -> last_year**	| (required) Display Last Year power (kW).
+**display -> life_time**	| (required) Display Life Time power (kW).
+**display -> battery**		| (required) Display Battery Level (%).
 

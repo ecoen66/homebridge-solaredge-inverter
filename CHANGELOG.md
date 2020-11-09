@@ -1,6 +1,13 @@
 # Changelog
 
 
+## 0.1.4 (2020-11-09)
+
+#### Changes
+
+- Modified config.schema.json
+- Added backwards compatibility if a user neglected to add *display* config section
+
 ## 0.1.3 (2020-11-03)
 
 #### Changes

@@ -39,41 +39,38 @@
 			"default": ""
 		},
 		"display": {
-			"type": "array",
-			"items": {
-				"title": "Display Config",
-				"type": "object",
-				"properties": {
-					"current": {
-						"title": "Current Power",
-						"type": "boolean",
-						"default": true
-					},
-					"last_day": {
-						"title": "Current Day's Power",
-						"type": "boolean",
-						"default": false
-					},
-					"last_month": {
-						"title": "Last Month's Power",
-						"type": "boolean",
-						"default": false
-					},
-					"last_year": {
-						"title": "Last Year's Power",
-						"type": "boolean",
-						"default": false
-					},
-					"life_time": {
-						"title": "Lifetime Power",
-						"type": "boolean",
-						"default": false
-					},
-					"battery": {
-						"title": "Battery Level",
-						"type": "boolean",
-						"default": false
-					}
+			"title": "Display Config",
+			"type": "object",
+			"properties": {
+				"current": {
+					"title": "Current Power",
+					"type": "boolean",
+					"default": true
+				},
+				"last_day": {
+					"title": "Current Day's Power",
+					"type": "boolean",
+					"default": false
+				},
+				"last_month": {
+					"title": "Last Month's Power",
+					"type": "boolean",
+					"default": false
+				},
+				"last_year": {
+					"title": "Last Year's Power",
+					"type": "boolean",
+					"default": false
+				},
+				"life_time": {
+					"title": "Lifetime Power",
+					"type": "boolean",
+					"default": false
+				},
+				"battery": {
+					"title": "Battery Level",
+					"type": "boolean",
+					"default": false
 				}
 			}
 		}
