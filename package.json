@@ -1,6 +1,6 @@
 {
 	"name": "homebridge-solaredge-inverter",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"description": "A Homebridge plugin to pull SolarEdge solar inverter data into HomeKit as light sensors.",
 	"author": "ecoen66",
 	"license": "MIT",
