@@ -12,31 +12,43 @@
 			"title": "Manufacturer",
 			"type": "string",
 			"required": false,
-			"default": ""
+			"default": "SolarEdge",
+			"description": "Manufacturer to display in Homekit."
 		},
 		"model": {
 			"title": "Inverter Model",
 			"type": "string",
 			"required": false,
-			"default": ""
+			"default": "Inverter",
+			"description": "Model number to display in Homekit."
 		},
 		"serial": {
 			"title": "Serial Number",
 			"type": "string",
 			"required": false,
-			"default": ""
+			"default": "solaredge-inverter-1",
+			"description": "Serial number to display in Homekit."
 		},
 		"site_id": {
 			"title": "Site ID",
 			"type": "string",
 			"required": true,
-			"default": ""
+			"default": "",
+			"description": "The Site ID for the SolarEdge API requests."
+
 		},
 		"api_key": {
-			"title": "API KeyD",
+			"title": "API Key",
 			"type": "string",
 			"required": true,
-			"default": ""
+			"default": "",
+			"description": "The API Key for the SolarEdge API requests."
+		},
+		"update_interval": {
+			"title": "Update Interval",
+			"type": "number",
+			"default": "15",
+			"description": "The frequency to poll the SolarEdge API in minutes."
 		},
 		"display": {
 			"title": "Display Config",
@@ -45,34 +57,46 @@
 				"current": {
 					"title": "Current Power",
 					"type": "boolean",
-					"default": true
+					"default": true,
+					"description": "Include a current power generation meter."
 				},
 				"last_day": {
 					"title": "Current Day's Power",
 					"type": "boolean",
-					"default": false
+					"default": false,
+					"description": "Include a current day power generation meter."
 				},
 				"last_month": {
 					"title": "Last Month's Power",
 					"type": "boolean",
-					"default": false
+					"default": false,
+					"description": "Include a last month power generation meter."
 				},
 				"last_year": {
 					"title": "Last Year's Power",
 					"type": "boolean",
-					"default": false
+					"default": false,
+					"description": "Include a last year power generation meter."
 				},
 				"life_time": {
 					"title": "Lifetime Power",
 					"type": "boolean",
-					"default": false
+					"default": false,
+					"description": "Include a lifetime power generation meter."
 				},
 				"battery": {
 					"title": "Battery Level",
 					"type": "boolean",
-					"default": false
+					"default": false,
+					"description": "Include a current battery level."
 				}
 			}
+		},
+		"debug": {
+			"title": "Debug",
+			"type": "boolean",
+			"default": "false",
+      "description": "Enables additional logging."
 		}
 	}
 }

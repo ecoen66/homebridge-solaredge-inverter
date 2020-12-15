@@ -33,6 +33,7 @@ Example accessory config (needs to be added to the homebridge config.json):
 				"serial": "myserialno",
 				"site_id": "mysiteid",
 				"api_key": "longapikey",
+				"update_interval": 15,
 				"accessory": "SolarEdge Inverter",
 				"display": {
 										"current": true,
@@ -41,6 +42,8 @@ Example accessory config (needs to be added to the homebridge config.json):
 										"last_year": false,
 										"life_time": true
 										"battery": true
+				},
+				"debug": false
 				}
 			}
     ]
@@ -48,15 +51,17 @@ Example accessory config (needs to be added to the homebridge config.json):
 
 ### Config Explanation:
 
-Field           			| Description
+Field           						| Description
 ----------------------------|------------
-**accessory**   			| (required) Must always be "SolarEdge Inverter".
-**name**					| (required) The name you want to use for for the power level widget.
-**site_id**  				| (required) The Site ID for your SolarEdge installation.
-**api_key**		  		| (required) The API Key for the administration of your SolarEdge site.
-**manufacturer**			| (optional) This shows up in the homekit accessory Characteristics.
-**model**					| (optional) This shows up in the homekit accessory Characteristics.
-**serial**					| (optional) This shows up in the homekit accessory Characteristics.
+**accessory**   						| (required) Must always be "SolarEdge Inverter".
+**name**										| (required) The name you want to use for for the power level widget.
+**site_id**  								| (required) The Site ID for your SolarEdge installation.
+**api_key**		  						| (required) The API Key for the administration of your SolarEdge site.
+**manufacturer**						| (optional) This shows up in the homekit accessory Characteristics.
+**model**										| (optional) This shows up in the homekit accessory Characteristics.
+**serial**									| (optional) This shows up in the homekit accessory Characteristics.
+**update_interval**					| (optional) The frequency to poll the SolarEdge API in minutes (defaults to 15).
+**debug**										| (optional) Enables additional logging.
 **display -> current**		| (required) Display current power (kW).
 **display -> last_day**		| (required) Display Last Day power (kW).
 **display -> last_month**	| (required) Display Last Month power (kW).

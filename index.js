@@ -59,23 +59,70 @@ const getInverterData = async(siteID, apiKey) => {
  * @param (log) access to the homebridge logfile
  * @return {bool} the value for the accessory
  */
-const getAccessoryValue = async (siteID, apiKey, log) => {
+const getAccessoryValue = async (siteID, apiKey, log, cachedInverterData, cachedTimestamp, interval, debug) => {
 
-	// To Do: Need to handle if no connection
-	const inverterData = await getInverterData(siteID, apiKey)
+	if(cachedInverterData) {
 
-	if(inverterData) {
-		log.info('Data from API', inverterData.data.overview);
+//		log.info('Last update time', cachedTimestamp.toString());
+//		log.info('Last update timestamp', cachedTimestamp);
+		const currentTime = new Date();
 
-		if(inverterData.data.overview) {
-			return inverterData.data.overview;
+//		log.info('Current time', currentTime.toString());
+//		log.info('Current timestamp', currentTime);
+
+//		log.info('Delta of timestamps is:', currentTime - cachedTimestamp);
+		if((currentTime - cachedTimestamp) >= interval) {
+
+			if (debug) {
+				log.info('Calling API');
+			}
+			// To Do: Need to handle if no connection
+			const inverterData = await getInverterData(siteID, apiKey)
+
+			if(inverterData) {
+				if (debug) {
+					log.info('Data from API', inverterData.data.overview);
+				}
+				if(inverterData.data.overview) {
+					const newTimestamp = new Date();
+					return [inverterData.data.overview, inverterData, newTimestamp];
+				}
+				else {
+					return null
+				}
+			} else {
+				return null
+			}
+		} else {
+			if (debug) {
+				log.info('Returning cached Inverter Data.');
+			}
+			return [cachedInverterData.data.overview, cachedInverterData, cachedTimestamp];
 		}
-		else {
+
+	} else {
+		if (debug) {
+			log.info('Calling API');
+		}
+		// To Do: Need to handle if no connection
+		const inverterData = await getInverterData(siteID, apiKey)
+
+		if(inverterData) {
+			if (debug) {
+				log.info('Data from API', inverterData.data.overview);
+			}
+			if(inverterData.data.overview) {
+				const newTimestamp = new Date();
+				return [inverterData.data.overview, inverterData, newTimestamp];
+			}
+			else {
+				return null
+			}
+		} else {
 			return null
 		}
-	} else {
-		return null
 	}
+
 }
 
 /**
@@ -100,23 +147,61 @@ const getPowerFlowData = async(siteID, apiKey) => {
  * @param (log) access to the homebridge logfile
  * @return {bool} the value for the accessory
  */
-const getBatteryValues = async (siteID, apiKey, log) => {
+const getBatteryValues = async (siteID, apiKey, log, cachedFlowData, cachedTimestamp, interval, debug) => {
 
-	// To Do: Need to handle if no connection
-	const powerFlowData = await getPowerFlowData(siteID, apiKey)
+	if(cachedFlowData) {
 
-	if(powerFlowData) {
-		log.info('Data from Power Flow API', powerFlowData.data.siteCurrentPowerFlow);
+		const currentTime = new Date();
+		if((currentTime - cachedTimestamp) >= interval) {
 
-		if(powerFlowData.data.siteCurrentPowerFlow) {
-			return powerFlowData.data.siteCurrentPowerFlow;
+			if (debug) {
+				log.info('Calling Flow API');
+			}
+			// To Do: Need to handle if no connection
+			const powerFlowData = await getPowerFlowData(siteID, apiKey)
+
+			if(powerFlowData) {
+				if (debug) {
+					log.info('Data from Power Flow API', powerFlowData.data.siteCurrentPowerFlow);
+				}
+				if(powerFlowData.data.siteCurrentPowerFlow) {
+					const newTimestamp = new Date();
+					return [powerFlowData.data.siteCurrentPowerFlow, powerFlowData, newTimestamp];
+				}
+				else {
+					return null
+				}
+			} else {
+				return null
+			}
+		} else {
+			if (debug) {
+				log.info('Returning cached Power Flow Data.');
+			}
+			return [cachedFlowData.data.siteCurrentPowerFlow, cachedFlowData, cachedTimestamp];
 		}
-		else {
+
+	} else {
+		if (debug) {
+			log.info('Calling API');
+		}
+	// To Do: Need to handle if no connection
+		const powerFlowData = await getPowerFlowData(siteID, apiKey)
+
+		if(powerFlowData) {
+			if (debug) {
+				log.info('Data from Power Flow API', powerFlowData.data.siteCurrentPowerFlow);
+			}
+			if(powerFlowData.data.siteCurrentPowerFlow) {
+				const newTimestamp = new Date();
+				return [powerFlowData.data.siteCurrentPowerFlow, powerFlowData, newTimestamp];
+			}
+			else {
+				return null
+			}
+		}	else {
 			return null
 		}
-	}
-	else {
-		return null
 	}
 }
 
@@ -156,8 +241,14 @@ class SolarEdgeInverter {
 		this.serial = config["serial"] || "solaredge-inverter-1";
 		this.site_id = config["site_id"];
 		this.api_key = config["api_key"];
+		this.update_interval = (config["update_interval"] || 15) * 60 * 1000;
+		this.debug = config["debug"] || false;
 		this.minLux = config["min_lux"] || DEF_MIN_LUX;
 		this.maxLux = config["max_lux"] || DEF_MAX_LUX;
+		this.inverterData =  null;
+		this.inverterTimestamp = null;
+		this.powerFlowData = null;
+		this.powerTimestamp = null;
 	}
 
 	getServices () {
@@ -212,8 +303,9 @@ class SolarEdgeInverter {
 	}
 
 	async getCurrentPowerHandler (callback) {
-		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
-
+		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval);
+		this.inverterData = cachedInverterData;
+		this.inverterTimestamp = newTimestamp;
 		if (result) {
 			if(parseFloat(result.currentPower.power) > 0) {
 				const power = Math.abs(Math.round(((result.currentPower.power / 1000) + Number.EPSILON) *10) /10)
@@ -229,7 +321,9 @@ class SolarEdgeInverter {
 	}
 
 	async getLastDayHandler (callback) {
-		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval);
+		this.inverterData = cachedInverterData;
+		this.inverterTimestamp = newTimestamp;
 
 		if (result) {
 			const energy = Math.abs(Math.round(result.lastDayData.energy / 1000) + Number.EPSILON)
@@ -241,7 +335,9 @@ class SolarEdgeInverter {
 	}
 
 	async getLastMonthHandler (callback) {
-		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
+		this.powerFlowData = cachedFlowData;
+		this.powerFlowTimestamp = newTimestamp;
 
 		if (result) {
 			const energy = Math.abs(Math.round(result.lastMonthData.energy / 1000) + Number.EPSILON)
@@ -253,7 +349,9 @@ class SolarEdgeInverter {
 	}
 
 	async getLastYearHandler (callback) {
-		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
+		this.powerFlowData = cachedFlowData;
+		this.powerFlowTimestamp = newTimestamp;
 
 		if (result) {
 			const energy = Math.abs(Math.round(result.lastYearData.energy / 1000) + Number.EPSILON)
@@ -265,7 +363,9 @@ class SolarEdgeInverter {
 	}
 
 	async getLifeTimeHandler (callback) {
-		const result = await getAccessoryValue(this.site_id, this.api_key, this.log);
+		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
+		this.powerFlowData = cachedFlowData;
+		this.powerFlowTimestamp = newTimestamp;
 
 		if (result) {
 			const energy = Math.abs(Math.round(result.lifeTimeData.energy / 1000) + Number.EPSILON)
@@ -277,7 +377,9 @@ class SolarEdgeInverter {
 	}
 
 	async getBatteryLevelCharacteristic (callback) {
-		const result = await getBatteryValues(this.site_id, this.api_key, this.log);
+		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
+		this.powerFlowData = cachedFlowData;
+		this.powerFlowTimestamp = newTimestamp;
 
 		if (!isEmptyObject(result)) {
 			const chargeLevel = result.STORAGE.chargeLevel
@@ -289,7 +391,9 @@ class SolarEdgeInverter {
 	}
 
 	async getChargingStateCharacteristic (callback) {
-		const result = await getBatteryValues(this.site_id, this.api_key, this.log);
+		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
+		this.powerFlowData = cachedFlowData;
+		this.powerFlowTimestamp = newTimestamp;
 
 		if (!isEmptyObject(result)) {
 			if (result.STORAGE.status == "Idle") {
@@ -314,7 +418,9 @@ class SolarEdgeInverter {
 	}
 
 	async getLowBatteryCharacteristic (callback) {
-		const result = await getBatteryValues(this.site_id, this.api_key, this.log);
+		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
+		this.powerFlowData = cachedFlowData;
+		this.powerFlowTimestamp = newTimestamp;
 
 		if (!isEmptyObject(result)) {
 			const lowBattery = result.STORAGE.critical

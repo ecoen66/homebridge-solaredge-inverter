@@ -1,6 +1,14 @@
 # Changelog
 
 
+## 0.1.5 (2020-12-14)
+
+#### Changes
+
+- Modified config.schema.json
+- Added update_interval to allow the use of cached data vs. API polling
+- Added a debug option for logging (the default is silent)
+
 ## 0.1.4 (2020-11-09)
 
 #### Changes
