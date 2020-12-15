@@ -335,9 +335,9 @@ class SolarEdgeInverter {
 	}
 
 	async getLastMonthHandler (callback) {
-		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
-		this.powerFlowData = cachedFlowData;
-		this.powerFlowTimestamp = newTimestamp;
+		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval);
+		this.inverterData = cachedInverterData;
+		this.inverterTimestamp = newTimestamp;
 
 		if (result) {
 			const energy = Math.abs(Math.round(result.lastMonthData.energy / 1000) + Number.EPSILON)
@@ -349,9 +349,9 @@ class SolarEdgeInverter {
 	}
 
 	async getLastYearHandler (callback) {
-		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
-		this.powerFlowData = cachedFlowData;
-		this.powerFlowTimestamp = newTimestamp;
+		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval);
+		this.inverterData = cachedInverterData;
+		this.inverterTimestamp = newTimestamp;
 
 		if (result) {
 			const energy = Math.abs(Math.round(result.lastYearData.energy / 1000) + Number.EPSILON)
@@ -363,9 +363,9 @@ class SolarEdgeInverter {
 	}
 
 	async getLifeTimeHandler (callback) {
-		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
-		this.powerFlowData = cachedFlowData;
-		this.powerFlowTimestamp = newTimestamp;
+		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval);
+		this.inverterData = cachedInverterData;
+		this.inverterTimestamp = newTimestamp;
 
 		if (result) {
 			const energy = Math.abs(Math.round(result.lifeTimeData.energy / 1000) + Number.EPSILON)
