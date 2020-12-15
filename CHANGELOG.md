@@ -1,6 +1,12 @@
 # Changelog
 
 
+## 0.1.7 (2020-12-14)
+
+#### Changes
+
+- Fixed debug logging
+
 ## 0.1.6 (2020-12-14)
 
 #### Changes

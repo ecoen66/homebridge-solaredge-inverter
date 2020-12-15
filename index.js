@@ -303,7 +303,7 @@ class SolarEdgeInverter {
 	}
 
 	async getCurrentPowerHandler (callback) {
-		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval);
+		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval, this.debug);
 		this.inverterData = cachedInverterData;
 		this.inverterTimestamp = newTimestamp;
 		if (result) {
@@ -321,7 +321,7 @@ class SolarEdgeInverter {
 	}
 
 	async getLastDayHandler (callback) {
-		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval);
+		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval, this.debug);
 		this.inverterData = cachedInverterData;
 		this.inverterTimestamp = newTimestamp;
 
@@ -335,7 +335,7 @@ class SolarEdgeInverter {
 	}
 
 	async getLastMonthHandler (callback) {
-		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval);
+		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval, this.debug);
 		this.inverterData = cachedInverterData;
 		this.inverterTimestamp = newTimestamp;
 
@@ -349,7 +349,7 @@ class SolarEdgeInverter {
 	}
 
 	async getLastYearHandler (callback) {
-		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval);
+		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval, this.debug);
 		this.inverterData = cachedInverterData;
 		this.inverterTimestamp = newTimestamp;
 
@@ -363,7 +363,7 @@ class SolarEdgeInverter {
 	}
 
 	async getLifeTimeHandler (callback) {
-		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval);
+		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval, this.debug);
 		this.inverterData = cachedInverterData;
 		this.inverterTimestamp = newTimestamp;
 
@@ -377,7 +377,7 @@ class SolarEdgeInverter {
 	}
 
 	async getBatteryLevelCharacteristic (callback) {
-		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
+		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval, this.debug);
 		this.powerFlowData = cachedFlowData;
 		this.powerFlowTimestamp = newTimestamp;
 
@@ -391,7 +391,7 @@ class SolarEdgeInverter {
 	}
 
 	async getChargingStateCharacteristic (callback) {
-		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
+		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval, this.debug);
 		this.powerFlowData = cachedFlowData;
 		this.powerFlowTimestamp = newTimestamp;
 
@@ -418,7 +418,7 @@ class SolarEdgeInverter {
 	}
 
 	async getLowBatteryCharacteristic (callback) {
-		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval);
+		const [result, cachedFlowData, newTimestamp] = await getBatteryValues(this.site_id, this.api_key, this.log, this.powerFlowData, this.powerFlowTimestamp, this.update_interval, this.debug);
 		this.powerFlowData = cachedFlowData;
 		this.powerFlowTimestamp = newTimestamp;
 
