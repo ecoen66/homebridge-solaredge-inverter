@@ -1,6 +1,13 @@
 # Changelog
 
 
+## 0.2.70 (2020-12-23)
+
+#### Changes
+
+- New config.schema.json -- REQUIRES changes to the config to remove display section
+- Added option to display Current Power in Watts vs. kW
+
 ## 0.1.7 (2020-12-14)
 
 #### Changes

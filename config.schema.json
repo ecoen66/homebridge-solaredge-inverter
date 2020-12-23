@@ -2,102 +2,124 @@
 	"pluginAlias": "SolarEdge Inverter",
 	"pluginType": "accessory",
 	"schema": {
-		"name": {
-			"title": "Name",
-			"type": "string",
-			"required": true,
-			"default": "SolarEdge Inverter"
-		},
-		"manufacturer": {
-			"title": "Manufacturer",
-			"type": "string",
-			"required": false,
-			"default": "SolarEdge",
-			"description": "Manufacturer to display in Homekit."
-		},
-		"model": {
-			"title": "Inverter Model",
-			"type": "string",
-			"required": false,
-			"default": "Inverter",
-			"description": "Model number to display in Homekit."
-		},
-		"serial": {
-			"title": "Serial Number",
-			"type": "string",
-			"required": false,
-			"default": "solaredge-inverter-1",
-			"description": "Serial number to display in Homekit."
-		},
-		"site_id": {
-			"title": "Site ID",
-			"type": "string",
-			"required": true,
-			"default": "",
-			"description": "The Site ID for the SolarEdge API requests."
+		"type": "object",
+		"properties": {
+			"name": {
+				"title": "Name",
+				"type": "string",
+				"required": true,
+				"default": "SolarEdge Inverter"
+			},
+			"manufacturer": {
+				"title": "Manufacturer",
+				"type": "string",
+				"required": false,
+				"default": "SolarEdge",
+				"description": "Manufacturer to display in Homekit."
+			},
+			"model": {
+				"title": "Inverter Model",
+				"type": "string",
+				"required": false,
+				"default": "Inverter",
+				"description": "Model number to display in Homekit."
+			},
+			"serial": {
+				"title": "Serial Number",
+				"type": "string",
+				"required": false,
+				"default": "solaredge-inverter-1",
+				"description": "Serial number to display in Homekit."
+			},
+			"site_id": {
+				"title": "Site ID",
+				"type": "string",
+				"required": true,
+				"default": "",
+				"description": "The Site ID for the SolarEdge API requests."
 
-		},
-		"api_key": {
-			"title": "API Key",
-			"type": "string",
-			"required": true,
-			"default": "",
-			"description": "The API Key for the SolarEdge API requests."
-		},
-		"update_interval": {
-			"title": "Update Interval",
-			"type": "number",
-			"default": "15",
-			"description": "The frequency to poll the SolarEdge API in minutes."
-		},
-		"display": {
-			"title": "Display Config",
-			"type": "object",
-			"properties": {
-				"current": {
-					"title": "Current Power",
-					"type": "boolean",
-					"default": true,
-					"description": "Include a current power generation meter."
-				},
-				"last_day": {
-					"title": "Current Day's Power",
-					"type": "boolean",
-					"default": false,
-					"description": "Include a current day power generation meter."
-				},
-				"last_month": {
-					"title": "Last Month's Power",
-					"type": "boolean",
-					"default": false,
-					"description": "Include a last month power generation meter."
-				},
-				"last_year": {
-					"title": "Last Year's Power",
-					"type": "boolean",
-					"default": false,
-					"description": "Include a last year power generation meter."
-				},
-				"life_time": {
-					"title": "Lifetime Power",
-					"type": "boolean",
-					"default": false,
-					"description": "Include a lifetime power generation meter."
-				},
-				"battery": {
-					"title": "Battery Level",
-					"type": "boolean",
-					"default": false,
-					"description": "Include a current battery level."
-				}
+			},
+			"api_key": {
+				"title": "API Key",
+				"type": "string",
+				"required": true,
+				"default": "",
+				"description": "The API Key for the SolarEdge API requests."
+			},
+			"update_interval": {
+				"title": "Update Interval",
+				"type": "number",
+				"default": "15",
+				"description": "The frequency to poll the SolarEdge API in minutes."
+			},
+			"current": {
+				"title": "Current Power",
+				"type": "boolean",
+				"default": true,
+				"description": "Include a current power generation meter."
+			},
+			"currentWatts": {
+				"title": "Show Current Power in Watts vs. kW",
+				"type": "boolean"
+			},
+			"last_day": {
+				"title": "Current Day's Power",
+				"type": "boolean",
+				"description": "Include a current day power generation meter."
+			},
+			"last_month": {
+				"title": "Last Month's Power",
+				"type": "boolean",
+				"description": "Include a last month power generation meter."
+			},
+			"last_year": {
+				"title": "Last Year's Power",
+				"type": "boolean",
+				"description": "Include a last year power generation meter."
+			},
+			"life_time": {
+				"title": "Lifetime Power",
+				"type": "boolean",
+				"description": "Include a lifetime power generation meter."
+			},
+			"battery": {
+				"title": "Battery Level",
+				"type": "boolean",
+				"description": "Include a current battery level."
+			},
+			"debug": {
+				"title": "Debug",
+				"type": "boolean",
+				"description": "Enables additional logging."
 			}
-		},
-		"debug": {
-			"title": "Debug",
-			"type": "boolean",
-			"default": "false",
-      "description": "Enables additional logging."
 		}
-	}
+	},
+	"form": [
+		"name",
+		"manufacturer",
+		"model",
+		"serial",
+		"site_id",
+		"api_key",
+		"update_interval",
+		{
+			"type": "fieldset",
+			"expandable": true,
+			"title": "Display Items",
+			"description": "Items to Display",
+			"items": [
+				"current",
+				{
+					"key": "currentWatts",
+					"condition": { "functionBody": "return model.current === true;" }
+				},
+				"last_day",
+				"last_month",
+				"last_year",
+				"life_time",
+				"battery"
+			]
+		},
+		"debug"
+	]
 }
-

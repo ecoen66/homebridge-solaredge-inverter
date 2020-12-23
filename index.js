@@ -209,29 +209,30 @@ class SolarEdgeInverter {
 	constructor(log, config) {
 		this.log = log
 		this.config = config
-		this.display = this.config.display || {current:true};
+		this.current = this.config.current || true;
 
-		if(this.display.current) {
-			this.currentPower = new Service.LightSensor("Current Power","Current Power")
+		if(this.current) {
+			this.currentPower = new Service.LightSensor("Current Power","Current Power");
+			this.currentWatts = this.config.currentWatts;
 		}
 
-		if(this.display.last_day) {
+		if(this.config.last_day) {
 			this.lastDayPower = new Service.LightSensor("Current Day", "Current Day")
 		}
 
-		if(this.display.last_month) {
+		if(this.config.last_month) {
 			this.lastMonth = new Service.LightSensor("Last Month", "Last Month")
 		}
 
-		if(this.display.last_year) {
+		if(this.config.last_year) {
 			this.lastYear = new Service.LightSensor("Last Year", "Last Year")
 		}
 
-		if(this.display.life_time) {
+		if(this.config.life_time) {
 			this.lifeTime = new Service.LightSensor("Life Time", "Life Time")
 		}
 
-		if(this.display.battery) {
+		if(this.config.battery) {
 			this.battery = new Service.BatteryService("Battery Level", "Battery Level")
 		}
 
@@ -259,37 +260,37 @@ class SolarEdgeInverter {
 
 		const services = [informationService]
 
-		if(this.display.current) {
+		if(this.current) {
 			this.currentPower.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 			.on('get', this.getCurrentPowerHandler.bind(this))
 			services.push(this.currentPower);
 		}
 
-		if(this.display.last_day) {
+		if(this.last_day) {
 			this.lastDayPower.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 			.on('get', this.getLastDayHandler.bind(this))
 			services.push(this.lastDayPower);
 		}
 
-		if(this.display.last_month) {
+		if(this.last_month) {
 			this.lastMonth.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 			.on('get', this.getLastMonthHandler.bind(this))
 			services.push(this.lastMonth);
 		}
 
-		if(this.display.last_year) {
+		if(this.last_year) {
 			this.lastYear.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 			.on('get', this.getLastYearHandler.bind(this))
 			services.push(this.lastYear);
 		}
 
-		if(this.display.life_time) {
+		if(this.life_time) {
 			this.lifeTime.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 			.on('get', this.getLifeTimeHandler.bind(this))
 			services.push(this.lifeTime);
 		}
 
-		if(this.display.battery) {
+		if(this.battery) {
 			this.battery.getCharacteristic(Characteristic.BatteryLevel)
 				.on('get', this.getBatteryLevelCharacteristic.bind(this));
 			this.battery.getCharacteristic(Characteristic.ChargingState)
@@ -306,9 +307,14 @@ class SolarEdgeInverter {
 		const [result, cachedInverterData, newTimestamp] = await getAccessoryValue(this.site_id, this.api_key, this.log, this.inverterData, this.inverterTimestamp, this.update_interval, this.debug);
 		this.inverterData = cachedInverterData;
 		this.inverterTimestamp = newTimestamp;
+		let power = 0;
 		if (result) {
 			if(parseFloat(result.currentPower.power) > 0) {
-				const power = Math.abs(Math.round(((result.currentPower.power / 1000) + Number.EPSILON) *10) /10)
+				if(this.currentWatts) {
+					power = Math.abs(Math.round((result.currentPower.power + Number.EPSILON) *10) /10)
+				} else {
+					power = Math.abs(Math.round(((result.currentPower.power / 1000) + Number.EPSILON) *10) /10)
+				}
 				callback(null, power);
 			}
 			else {
