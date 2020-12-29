@@ -1,7 +1,13 @@
 # Changelog
 
 
-## 0.2.70 (2020-12-23)
+## 0.2.1 (2020-12-29)
+
+#### Changes
+
+- Bug fixed.  Was not displaying anything but current power.
+
+## 0.2.0 (2020-12-23)
 
 #### Changes
 

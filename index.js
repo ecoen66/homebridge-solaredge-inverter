@@ -266,25 +266,25 @@ class SolarEdgeInverter {
 			services.push(this.currentPower);
 		}
 
-		if(this.last_day) {
+		if(this.lastDayPower) {
 			this.lastDayPower.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 			.on('get', this.getLastDayHandler.bind(this))
 			services.push(this.lastDayPower);
 		}
 
-		if(this.last_month) {
+		if(this.lastMonth) {
 			this.lastMonth.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 			.on('get', this.getLastMonthHandler.bind(this))
 			services.push(this.lastMonth);
 		}
 
-		if(this.last_year) {
+		if(this.lastYear) {
 			this.lastYear.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 			.on('get', this.getLastYearHandler.bind(this))
 			services.push(this.lastYear);
 		}
 
-		if(this.life_time) {
+		if(this.lifeTime) {
 			this.lifeTime.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
 			.on('get', this.getLifeTimeHandler.bind(this))
 			services.push(this.lifeTime);
