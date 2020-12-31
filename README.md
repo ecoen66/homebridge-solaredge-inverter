@@ -35,14 +35,13 @@ Example accessory config (needs to be added to the homebridge config.json):
 				"api_key": "longapikey",
 				"update_interval": 15,
 				"accessory": "SolarEdge Inverter",
-				"display": {
-										"current": true,
-										"last_day": false,
-										"last_month": false,
-										"last_year": false,
-										"life_time": true
-										"battery": true
-				},
+				"current": true,
+				"currentWatts": true,
+				"last_day": false,
+				"last_month": false,
+				"last_year": false,
+				"life_time": true
+				"battery": true
 				"debug": false
 				}
 			}
@@ -62,10 +61,11 @@ Field           						| Description
 **serial**									| (optional) This shows up in the homekit accessory Characteristics.
 **update_interval**					| (optional) The frequency to poll the SolarEdge API in minutes (defaults to 15).
 **debug**										| (optional) Enables additional logging.
-**display -> current**		| (required) Display current power (kW).
-**display -> last_day**		| (required) Display Last Day power (kW).
-**display -> last_month**	| (required) Display Last Month power (kW).
-**display -> last_year**	| (required) Display Last Year power (kW).
-**display -> life_time**	| (required) Display Life Time power (kW).
-**display -> battery**		| (required) Display Battery Level (%).
+**current**									| (required) Display current power (kW).
+**currentWatts**						| (optional) Display current power in W vs. kW.
+**last_day**								| (required) Display Last Day power (kW).
+**last_month**							| (required) Display Last Month power (kW).
+**last_year**								| (required) Display Last Year power (kW).
+**life_time**								| (required) Display Life Time power (kW).
+**battery**									| (required) Display Battery Level (%).
 

@@ -1,6 +1,15 @@
 # Changelog
 
 
+## 0.2.2 (2020-12-31)
+
+#### Changes
+
+- Entire re-write to a push vs. pull update model, minimizing SolarEdge API calls (Issue #11).
+- Updated math rounding.
+- Updated README.md.
+- Good-bye 2020!
+
 ## 0.2.1 (2020-12-29)
 
 #### Changes
