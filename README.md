@@ -26,7 +26,7 @@ Example accessory config (needs to be added to the homebridge config.json):
  ...
 
 		"accessories": [
-      {
+			{
 				"name": "SolarEdge Inverter",
 				"manufacturer": "SolarEdge",
 				"model": "SE10000H-US000BNU4",
@@ -43,9 +43,8 @@ Example accessory config (needs to be added to the homebridge config.json):
 				"life_time": true
 				"battery": true
 				"debug": false
-				}
 			}
-    ]
+		]
  ...
 
 ### Config Explanation:
