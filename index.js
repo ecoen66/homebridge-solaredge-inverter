@@ -253,10 +253,10 @@ class SolarEdgeInverter {
 								} else {
 									power = Math.abs(Math.round(((accessoryValue.currentPower.power / 1000) + Number.EPSILON) *10) /10)
 								}
-								this.currentPower
-									.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-									.updateValue(power)
 							}
+							this.currentPower
+								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+								.updateValue(power)
 						}
 						if(this.lastDayPower) {
 							power = Math.abs(Math.round(((accessoryValue.lastDayData.energy / 1000) + Number.EPSILON) *10) /10)

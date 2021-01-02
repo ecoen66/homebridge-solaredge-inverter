@@ -1,6 +1,13 @@
 # Changelog
 
 
+## 0.2.3 (2021-01-02)
+
+#### Changes
+
+- Fixed bug at end of day, was not updating current power when current power is 0 (Issue #15).
+- Fixed a README.md typo.
+
 ## 0.2.2 (2020-12-31)
 
 #### Changes
