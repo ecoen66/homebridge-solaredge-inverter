@@ -132,10 +132,10 @@ const update = async(that) => {
 					} else {
 						power = Math.abs(Math.round(((accessoryValue.currentPower.power / 1000) + Number.EPSILON) *10) /10)
 					}
-					that.currentPower
-						.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-						.updateValue(power)
 				}
+				that.currentPower
+					.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+					.updateValue(power)
 			}
 			if(that.lastDayPower) {
 				power = Math.abs(Math.round(((accessoryValue.lastDayData.energy / 1000) + Number.EPSILON) *10) /10)
