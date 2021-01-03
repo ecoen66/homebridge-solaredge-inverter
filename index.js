@@ -201,7 +201,7 @@ class SolarEdgeInverter {
 	constructor(log, config) {
 		this.log = log
 		this.config = config
-		this.current = this.config.current || true;
+		this.current = this.config.current;
 
 		if(this.current) {
 			this.currentPower = new Service.LightSensor("Current Power","Current Power");

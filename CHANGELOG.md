@@ -1,6 +1,12 @@
 # Changelog
 
 
+## 0.2.4 (2021-01-02)
+
+#### Changes
+
+- Allows for multiple instances to be loaded for the same Inverter with different measurements - Lifetime vs Current Power, without forcing a Current Power measurement on each instance (Issue #16).
+
 ## 0.2.3 (2021-01-02)
 
 #### Changes
