@@ -1,6 +1,13 @@
 # Changelog
 
 
+## 0.2.5 (2021-03-08)
+
+#### Changes
+
+- Utilizes timed updates based on update_interval (in minutes).
+- Adjusted power responses of 0 to return 0.0001 Lumens to Homekit (Issue #19).
+
 ## 0.2.4 (2021-01-02)
 
 #### Changes

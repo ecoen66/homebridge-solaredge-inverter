@@ -21,11 +21,14 @@ module.exports = function(homebridge) {
  * Setup Cache For Axios to prevent additional requests
  */
 const cache = setupCache({
-  maxAge: 5 * 1000 //in ms
+	maxAge: 1 * 60 * 1000, //in ms
+	readHeaders: false,
+	// For this example to work we disable query exclusion
+	exclude: { query: false }
 })
 
 const api = axios.create({
-  adapter: cache.adapter
+	adapter: cache.adapter
 })
 
 function isEmptyObject(obj) {
@@ -43,9 +46,13 @@ function isEmptyObject(obj) {
  * @param {siteID} the SolarEdge Site ID to be queried
  * @param {apiKey} the SolarEdge monitoring API Key for access to the Site
  */
-const getInverterData = async(siteID, apiKey) => {
+const getInverterData = async(siteID, apiKey, update_interval) => {
 	try {
-	    return await api.get('https://monitoringapi.solaredge.com/site/'+siteID+'/overview?api_key='+apiKey)
+	    return await api.get('https://monitoringapi.solaredge.com/site/'+siteID+'/overview?api_key='+apiKey, {
+	    	cache: {
+	    	maxAge: update_interval
+	    	}
+	    })
 	} catch (error) {
 	    console.error(error)
 	}
@@ -64,11 +71,15 @@ const getAccessoryValue = async(that) => {
 		that.log.info('Calling API');
 	}
 	// To Do: Need to handle if no connection
-	const inverterData = await getInverterData(that.siteID, that.apiKey)
+	const inverterData = await getInverterData(that.siteID, that.apiKey, that.update_interval)
 
 	if(inverterData) {
 		if (that.debug) {
-			that.log.info('Data from API', inverterData.data.overview);
+			if (inverterData.request.fromCache !== true) {
+				that.log.info('Data from API', inverterData.data.overview);
+			} else {
+				that.log.info('Data from cache', inverterData.data.overview);
+			}
 		}
 		if(inverterData.data.overview) {
 			return inverterData.data.overview;
@@ -87,9 +98,13 @@ const getAccessoryValue = async(that) => {
  * @param {siteID} the SolarEdge Site ID to be queried
  * @param {apiKey} the SolarEdge monitoring API Key for access to the Site
  */
-const getPowerFlowData = async(siteID, apiKey) => {
+const getPowerFlowData = async(siteID, apiKey, update_interval) => {
 	try {
-	    return await api.get('https://monitoringapi.solaredge.com/site/'+siteID+'/currentPowerFlow?api_key='+apiKey)
+	    return await api.get('https://monitoringapi.solaredge.com/site/'+siteID+'/currentPowerFlow?api_key='+apiKey, {
+	    	cache: {
+	    	maxAge: update_interval
+	    	}
+	    })
 	} catch (error) {
 	    console.error(error)
 	}
@@ -103,11 +118,15 @@ const getBatteryValues = async (that) => {
 		that.log.info('Calling Flow API');
 	}
 	// To Do: Need to handle if no connection
-	const powerFlowData = await getPowerFlowData(that.siteID, that.apiKey)
+	const powerFlowData = await getPowerFlowData(that.siteID, that.apiKey, that.update_interval)
 
 	if(powerFlowData) {
 		if (that.debug) {
-			that.log.info('Data from Power Flow API', powerFlowData.data.siteCurrentPowerFlow);
+			if (powerFlowData.request.fromCache !== true) {
+				that.log.info('Data from Power Flow API', powerFlowData.data.siteCurrentPowerFlow);
+			} else {
+			that.log.info('Data from Power Flow cache', powerFlowData.data.siteCurrentPowerFlow);
+			}
 		}
 		if(powerFlowData.data.siteCurrentPowerFlow) {
 			return powerFlowData.data.siteCurrentPowerFlow;
@@ -135,31 +154,31 @@ const update = async(that) => {
 				}
 				that.currentPower
 					.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-					.updateValue(power)
+					.updateValue(power ? power : 0.0001)
 			}
 			if(that.lastDayPower) {
 				power = Math.abs(Math.round(((accessoryValue.lastDayData.energy / 1000) + Number.EPSILON) *10) /10)
 				that.lastDayPower
 					.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-					.updateValue(power)
+					.updateValue(power ? power : 0.0001)
 			}
 			if(that.lastMonth) {
 				power = Math.abs(Math.round(((accessoryValue.lastMonthData.energy / 1000) + Number.EPSILON) *10) /10)
 				that.lastMonth
 					.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-					.updateValue(power)
+					.updateValue(power ? power : 0.0001)
 			}
 			if(that.lastYear) {
 				power = Math.abs(Math.round(((accessoryValue.lastYearData.energy / 1000) + Number.EPSILON) *10) /10)
 				that.lastYear
 					.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-					.updateValue(power)
+					.updateValue(power ? power : 0.0001)
 			}
 			if(that.lifeTime) {
 				power = Math.abs(Math.round(((accessoryValue.lifeTimeData.energy / 1000) + Number.EPSILON) *10) /10)
 				that.lifeTime
 					.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-					.updateValue(power)
+					.updateValue(power ? power : 0.0001)
 			}
 		}
 	}
@@ -256,31 +275,31 @@ class SolarEdgeInverter {
 							}
 							this.currentPower
 								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-								.updateValue(power)
+								.updateValue(power ? power : 0.0001)
 						}
 						if(this.lastDayPower) {
 							power = Math.abs(Math.round(((accessoryValue.lastDayData.energy / 1000) + Number.EPSILON) *10) /10)
 							this.lastDayPower
 								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-								.updateValue(power)
+								.updateValue(power ? power : 0.0001)
 						}
 						if(this.lastMonth) {
 							power = Math.abs(Math.round(((accessoryValue.lastMonthData.energy / 1000) + Number.EPSILON) *10) /10)
 							this.lastMonth
 								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-								.updateValue(power)
+								.updateValue(power ? power : 0.0001)
 						}
 						if(this.lastYear) {
 							power = Math.abs(Math.round(((accessoryValue.lastYearData.energy / 1000) + Number.EPSILON) *10) /10)
 							this.lastYear
 								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-								.updateValue(power)
+								.updateValue(power ? power : 0.0001)
 						}
 						if(this.lifeTime) {
 							power = Math.abs(Math.round(((accessoryValue.lifeTimeData.energy / 1000) + Number.EPSILON) *10) /10)
 							this.lifeTime
 								.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-								.updateValue(power)
+								.updateValue(power ? power : 0.0001)
 						}
 					}
 				}
