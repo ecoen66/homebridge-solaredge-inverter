@@ -1,6 +1,12 @@
 # Changelog
 
 
+## 0.2.6 (2021-10-05)
+
+#### Changes
+
+- Updated dependencies.
+
 ## 0.2.5 (2021-03-08)
 
 #### Changes
