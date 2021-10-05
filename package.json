@@ -19,7 +19,7 @@
 		"url": "http://github.com/ecoen66/homebridge-solaredge-inverter/issues"
 	},
 	"dependencies": {
-		"axios": "^0.22.0",
+		"axios": "^0.21.2",
 		"axios-cache-adapter": "^2.7.3"
 	},
 	"devDependencies": {},
