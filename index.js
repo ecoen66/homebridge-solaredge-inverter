@@ -232,11 +232,11 @@ class SolarEdgeInverter {
 		}
 
 		if(this.config.last_month) {
-			this.lastMonth = new Service.LightSensor("Last Month", "Last Month")
+			this.lastMonth = new Service.LightSensor("Current Month", "Current Month")
 		}
 
 		if(this.config.last_year) {
-			this.lastYear = new Service.LightSensor("Last Year", "Last Year")
+			this.lastYear = new Service.LightSensor("Current Year", "Current Year")
 		}
 
 		if(this.config.life_time) {

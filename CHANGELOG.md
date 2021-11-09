@@ -1,6 +1,12 @@
 # Changelog
 
 
+## 0.2.7 (2021-11-09)
+
+#### Changes
+
+- Changed verbiage for Current Month & Current Year (Issue #27).
+
 ## 0.2.6 (2021-10-05)
 
 #### Changes
