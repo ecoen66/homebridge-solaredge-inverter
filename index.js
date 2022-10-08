@@ -208,8 +208,10 @@ const update = async(that) => {
 		that.battery
 			.getCharacteristic(Characteristic.BatteryLevel)
 				.updateValue(chargeLevel);
+		that.battery
 			.getCharacteristic(Characteristic.ChargingState)
 				.updateValue(chargingState);
+		that.battery
 			.getCharacteristic(Characteristic.StatusLowBattery)
 				.updateValue(lowBattery);
 	}
@@ -329,8 +331,10 @@ class SolarEdgeInverter {
 					this.battery
 						.getCharacteristic(Characteristic.BatteryLevel)
 							.updateValue(chargeLevel);
+					this.battery
 						.getCharacteristic(Characteristic.ChargingState)
 							.updateValue(chargingState);
+					this.battery
 						.getCharacteristic(Characteristic.StatusLowBattery)
 							.updateValue(lowBattery);
 				}
