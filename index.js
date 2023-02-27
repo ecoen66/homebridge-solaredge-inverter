@@ -207,11 +207,13 @@ const update = async(that) => {
 		}
 		that.battery
 			.getCharacteristic(Characteristic.BatteryLevel)
-				.updateValue(chargeLevel)
+				.updateValue(chargeLevel);
+		that.battery
 			.getCharacteristic(Characteristic.ChargingState)
-				.updateValue(chargingState)
+				.updateValue(chargingState);
+		that.battery
 			.getCharacteristic(Characteristic.StatusLowBattery)
-				.updateValue(lowBattery)
+				.updateValue(lowBattery);
 	}
 }
 
@@ -328,11 +330,13 @@ class SolarEdgeInverter {
 					}
 					this.battery
 						.getCharacteristic(Characteristic.BatteryLevel)
-							.updateValue(chargeLevel)
+							.updateValue(chargeLevel);
+					this.battery
 						.getCharacteristic(Characteristic.ChargingState)
-							.updateValue(chargingState)
+							.updateValue(chargingState);
+					this.battery
 						.getCharacteristic(Characteristic.StatusLowBattery)
-							.updateValue(lowBattery)
+							.updateValue(lowBattery);
 				}
 			}, this.update_interval)
 		}
