@@ -5,6 +5,13 @@ A [SolarEdge](https://www.solaredge.com) Inverter plugin for
 
 This code is heavily based on the work of Stog's [homebridge-fronius-inverter](https://github.com/Stog/homebridge-fronius-inverter) accessory.
 
+# API Key Access
+You will need access to generate an API key, or have one generated from you.
+I have found that the easiest way to do this is to open a ticket with SolarEdge's support helpdesk located at [SolarEdge Helpdesk](https://www.solaredge.com/us/service/support/cases).
+
+Further, I also opened a chat dialogue with them after I created the ticket. The live support person was able to give my account access to the api key, and to regenerate the api key as well, as documented on their [API Documentation](https://www.solaredge.com/sites/default/files/se_monitoring_api.pdf).
+Make sure to let the service representative on the chat that you specifically need access to get an API key!
+
 # Installation
 Run these commands:
 
