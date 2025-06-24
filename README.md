@@ -47,8 +47,8 @@ Example accessory config (needs to be added to the homebridge config.json):
 				"last_day": false,
 				"last_month": false,
 				"last_year": false,
-				"life_time": true
-				"battery": true
+				"life_time": true.
+				"battery": false.
 				"debug": false
 			}
 		]
